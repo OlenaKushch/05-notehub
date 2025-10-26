@@ -1,40 +1,63 @@
-import axios, { AxiosResponse } from 'axios';
-import { Note, NoteTag } from '../types/note';
+import axios from "axios";
+import type { Note } from "../types/note";
 
-const RequestURL = 'https://notehub-public.goit.study/api/auth'
+const BASE_URL = "https://notehub-public.goit.study/api";
 const TOKEN = import.meta.env.VITE_NOTEHUB_TOKEN;
 
-
-export interface FetchNotesResponse {
-    notes: Note[];
-    page: number;
-    perPage: number;
-    
-    totalPages: number;
+export interface URLResponse {
+  notes: Note[],
+  totalPages: number
 }
 
-export interface FetchNotesParams {
-    page?: number;
-    perPage?: number;
-    search?: string;
-}
-
-export function fetchNotes({
-    page = 1,
-    perPage = 12,
-    search = '',
-}: FetchNotesParams = {}): Promise<FetchNotesResponse>{ const response: AxiosResponse<FetchNotesResponse> await axios.get {`${RequestURL}/notes` }
-{
-    params: { pageXOffset, perPage, search,},
-    headers: { Autorization: `Bearer ${TOKEN}`, },
+const api = axios.create({
+  baseURL: BASE_URL,
+  headers: {
+    Authorization: `Bearer ${TOKEN}`
+  },
 });
-return Response.data;
-}
-    
-}
-export async function createNotes({content, }: CreateNoteParams): {
 
+export type FetchNotesParams = {
+  page?: number;
+  perPage?: number;
+  search?: string;
 }
-deleteNotes(){
 
+export const fetchNotes = async ({
+  page = 1,
+  perPage = 12,
+  search = '',
+}: FetchNotesParams): Promise<URLResponse> => {
+  const { data } = await api.get<URLResponse>("/notes", {
+    params: { page, perPage,  search},
+  });
+  return data;
+};
+export interface NewNoteData {
+  id: number;
+  title?: string;
+  content?: string;
+
+  tag?: string;
 }
+export const createNote = async (newNoteData: NewNoteData): Promise<Note> => {
+  const res = await api.post<Note>("/notes", newNoteData);
+  return res.data;
+};
+
+export const deleteNote = async (noteId: string) => {
+  const res = await api.delete<Note>(`notes/${noteId}`);
+  return res.data;
+};
+export interface NoteUpdateData {
+  id: string;
+  title?: string;
+  content?: string;
+  tag?: string;
+}
+export const updateNote = async (noteUpdateData: NoteUpdateData) => {
+  const res = await api.put<Note>(
+    `/notes/${noteUpdateData.id}`,
+    noteUpdateData
+  );
+  return res.data;
+};
