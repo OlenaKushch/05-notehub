@@ -1,6 +1,7 @@
 
 import type { DebouncedState } from 'use-debounce';
 import css from './SearchBox.module.css';
+import { useState } from 'react';
 
 
 
@@ -11,16 +12,19 @@ interface SearchBoxProps {
 }
 
 export default function SearchBox({ onSearch, searchQuery }: SearchBoxProps) {
+const [localValue, setLocalValue] = useState(searchQuery);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        onSearch(e.target.value);
+        const value = e.target.value;
+        setLocalValue(value);
+        onSearch(value);
     };
     return (
         <input
             className={css.input}
             type="text"
             placeholder="Search notes"
-            value={searchQuery}
+            value={localValue}
             onChange={handleChange}
         />
     );

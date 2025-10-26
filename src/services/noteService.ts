@@ -27,25 +27,28 @@ export const fetchNotes = async ({
   perPage = 12,
   search = '',
 }: FetchNotesParams): Promise<URLResponse> => {
-  const { data } = await api.get<URLResponse>("/notes", {
-    params: { page, perPage,  search},
-  });
+  const params: Record<string, string | number> = { page, perPage };
+  if (search.trim() !== '') params.search = search;
+
+  const { data } = await api.get<URLResponse>('/notes', { params });
   return data;
 };
-export interface NewNoteData {
-  id: number;
-  title?: string;
-  content?: string;
 
-  tag?: string;
+
+
+export interface NewNoteData {
+  title: string;
+  content?: string;
+  tag: string;
 }
+
 export const createNote = async (newNoteData: NewNoteData): Promise<Note> => {
   const res = await api.post<Note>("/notes", newNoteData);
   return res.data;
 };
 
 export const deleteNote = async (noteId: string) => {
-  const res = await api.delete<Note>(`notes/${noteId}`);
+  const res = await api.delete<Note>(`/notes/${noteId}`);
   return res.data;
 };
 export interface NoteUpdateData {
