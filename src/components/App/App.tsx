@@ -17,11 +17,11 @@ export default function App() {
   const perPage = 12;
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [inputValue, setInputValue] = useState('');
 
   const handleSearch = useDebouncedCallback(
-    (search: string) => {
-      setSearchQuery(search);
-
+    (value: string) => {
+      setSearchQuery(value)
     }, 600
   );
 
@@ -31,25 +31,24 @@ export default function App() {
     placeholderData: (prev) => prev,
   });
 
-useEffect(() => {
-  if(isSuccess && data?.notes.length === 0) {
-    toast("No notes found", {
-      duration: 4000,
-      position: 'top-center',
-    });
-  }
-}, [isSuccess, data]);
+  useEffect(() => {
+    if (isSuccess && data?.notes.length === 0) {
+      toast("No notes found", {
+        duration: 4000,
+        position: 'top-center',
+      });
+    }
+  }, [isSuccess, data]);
 
-  // if (isLoading) return <p>Loading...</p>;
+
   if (isError) return <p>Error loading notes...</p>;
-  // if (!data || data.notes.length === 0) return <p>No notes found.</p>;
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
   return (<div className={css.app}>
     <header className={css.toolbar}>
-      <SearchBox onSearch={handleSearch} searchQuery={searchQuery} />
+      <SearchBox value={inputValue} onChange={(value) => {setInputValue(value); handleSearch(value);}} />
       {data && data.totalPages > 1 && (
         <Pagination
           totalPages={data.totalPages}

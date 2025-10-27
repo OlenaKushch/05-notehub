@@ -6,7 +6,7 @@ import { createNote, type NewNoteData } from "../../services/noteService";
 import css from './NoteForm.module.css';
 
 
-interface FormProps {
+interface NoteFormProps {
   onClose: () => void;
 }
 const validationSchema = Yup.object({
@@ -20,7 +20,7 @@ const validationSchema = Yup.object({
     .required("Tag is required"),
 });
 
-export default function NoteForm({ onClose }: FormProps) {
+export default function NoteForm({ onClose }: NoteFormProps) {
 
   const queryClient = useQueryClient();
 

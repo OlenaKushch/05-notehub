@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { Note } from "../types/note";
+import type { Note, NoteTag } from "../types/note";
 
 const BASE_URL = "https://notehub-public.goit.study/api";
 const TOKEN = import.meta.env.VITE_NOTEHUB_TOKEN;
@@ -39,7 +39,7 @@ export const fetchNotes = async ({
 export interface NewNoteData {
   title: string;
   content?: string;
-  tag: string;
+  tag: NoteTag;
 }
 
 export const createNote = async (newNoteData: NewNoteData): Promise<Note> => {
@@ -51,16 +51,5 @@ export const deleteNote = async (noteId: string) => {
   const res = await api.delete<Note>(`/notes/${noteId}`);
   return res.data;
 };
-export interface NoteUpdateData {
-  id: string;
-  title?: string;
-  content?: string;
-  tag?: string;
-}
-export const updateNote = async (noteUpdateData: NoteUpdateData) => {
-  const res = await api.put<Note>(
-    `/notes/${noteUpdateData.id}`,
-    noteUpdateData
-  );
-  return res.data;
-};
+
+
